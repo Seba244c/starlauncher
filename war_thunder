@@ -1,0 +1,47 @@
+# /bin/sh
+echo [===] sebsn [===]
+if [ -z ${SEBSN_DIR+x} ]
+then
+    echo "Please set SEBSN_DIR"
+    exit 0
+else
+    read -t 2 -p "SEBSN DIR: $SEBSN_DIR"
+fi
+
+echo [===] Setting ENV [===]
+unset WINEPREFIX
+unset WINEARCH
+unset WINEPATH
+export WINEPREFIX=$SEBSN_DIR/sebs-wt/prefix
+export WINEPATH=$SEBSN_DIR/sebs-wt
+export WINEARCH=win64
+export DXVK_HUD=1
+
+echo [===] WINE [===]
+printenv | grep WINE
+wine --version
+
+echo [===] Check if installed [===]
+if [ -d $WINEPREFIX ]
+then
+    echo Installed
+    read -t 2 -p ""
+    /opt/wine-staging/bin/wine "$WINEPREFIX/drive_c/users/sebsn/AppData/Local/WarThunder/launcher.exe"
+else
+    echo Installing..
+    read -t 5 -p ""
+    mkdir -p $WINEPREFIX
+
+    echo [===] Wine Init [===]
+    /opt/wine-staging/bin/wineboot -u
+    sh winetricks arial
+
+    echo [===] DVKK [===]
+    cp ./dxvk-2.1/x64/*.dll $WINEPREFIX/drive_c/windows/system32
+    cp ./dxvk-2.1/x32/*.dll $WINEPREFIX/drive_c/windows/syswow64
+    /opt/wine-staging/bin/winecfg
+
+    /opt/wine-staging/bin/wine wt_launcher_1.0.3.364.exe
+fi
+
+
