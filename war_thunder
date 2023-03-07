@@ -8,15 +8,6 @@ else
     read -t 2 -p "SEBSN DIR: $SEBSN_DIR"
 fi
 
-echo [===] Setting ENV [===]
-unset WINEPREFIX
-unset WINEARCH
-unset WINEPATH
-export WINEPREFIX=$SEBSN_DIR/sebs-wt/prefix
-export WINEPATH=$SEBSN_DIR/sebs-wt
-export WINEARCH=win64
-export DXVK_HUD=1
-
 echo [===] WINE [===]
 printenv | grep WINE
 wine --version
